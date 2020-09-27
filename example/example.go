@@ -1,20 +1,44 @@
-package example
+package main
 
 import (
 	"fmt"
-	request2 "github.com/assetto-io/request/request"
-	"io/ioutil"
+	"github.com/assetto-io/request/request"
+	"net/http"
 )
 
-func exampleUsage() {
-	client := request2.Client()
-	response, err := client.Get("http://github.com", nil)
+var (
+	httpClient = makeGithubClient()
+)
+
+func makeGithubClient() request.HttpClient {
+	client := request.Client()
+
+	headers := make(http.Header)
+	headers.Set("Authorization", "Bearer: ABC-123")
+	client.SetDefaultHeaders(headers)
+
+	return client
+}
+
+func main() {
+	getUrls()
+	getUrls()
+	getUrls()
+	getUrls()
+}
+
+func getUrls() {
+	//headers := make(http.Header)
+	//headers.Set("Authorization", "Bearer: ABC-123")
+	response, err := httpClient.Get("https://api.github.com", nil)
 
 	if err != nil {
 
 	}
 
-	bytes, _ := ioutil.ReadAll(response.Body)
-	fmt.Printf(string(bytes))
+	fmt.Println(response.StatusCode)
+
+	//bytes, _ := ioutil.ReadAll(response.Body)
+	//fmt.Printf(string(bytes))
 
 }
