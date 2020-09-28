@@ -15,7 +15,7 @@ func makeGithubClient() request.HttpClient {
 
 	headers := make(http.Header)
 	headers.Set("Authorization", "Bearer: ABC-123")
-	client.SetDefaultHeaders(headers)
+	client.SetCommonHeaders(headers)
 
 	return client
 }
