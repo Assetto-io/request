@@ -47,37 +47,22 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 	}
 
 	resultResponse := Response{
-		status:     response.Status,
-		statusCode: response.StatusCode,
-		headers:    response.Header,
-		body:       responseBody,
+		Status:     response.Status,
+		StatusCode: response.StatusCode,
+		Headers:    response.Header,
+		Body:       responseBody,
 	}
 
 	return &resultResponse, nil
 }
 
-func (c *httpClient) mapRequestHeaders(customHeaders http.Header) http.Header {
-	result := make(http.Header)
-
-	// get headers from default settings
-	for key, value := range c.settings.headers {
-		if len(value) > 0 {
-			result.Set(key, value[0])
-		}
-	}
-
-	// get headers from custom settings
-	for key, value := range customHeaders {
-		if len(value) > 0 {
-			result.Set(key, value[0])
-		}
-	}
-
-	return result
-}
-
 func (c *httpClient) getClient() *http.Client {
 	c.clientOnce.Do(func() {
+		if c.settings.client != nil {
+			c.client = c.settings.client
+			return
+		}
+
 		c.client = &http.Client{
 			Timeout: c.getConnectionTimeout() + c.getResponseTimeout(),
 			Transport: &http.Transport{
