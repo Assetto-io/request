@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/assetto-io/request/request"
 	"net/http"
+	"time"
 )
 
 var (
@@ -11,11 +12,13 @@ var (
 )
 
 func makeGithubClient() request.HttpClient {
-	client := request.Client()
+	customHeaders := make(http.Header)
+	customHeaders.Set("Authorization", "Bearer: ABC-123")
 
-	headers := make(http.Header)
-	headers.Set("Authorization", "Bearer: ABC-123")
-	client.SetCommonHeaders(headers)
+	client := request.NewBuilder().
+		SetCommonHeaders(customHeaders).
+		SetConnectionTimeout(1 * time.Second).
+		SetResponseTimeout(3 * time.Second).Build()
 
 	return client
 }

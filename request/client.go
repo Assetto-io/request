@@ -1,9 +1,11 @@
 package request
 
-import "net/http"
+import (
+	"net/http"
+	"sync"
+)
 
 type HttpClient interface {
-	SetCommonHeaders(headers http.Header)
 	Get(url string, headers http.Header) (*http.Response, error)
 	Post(url string, headers http.Header, body interface{}) (*http.Response, error)
 	Put(url string, headers http.Header, body interface{}) (*http.Response, error)
@@ -12,15 +14,9 @@ type HttpClient interface {
 }
 
 type httpClient struct {
-	Headers http.Header
-}
-
-func Client() HttpClient {
-	return &httpClient{}
-}
-
-func (c *httpClient) SetCommonHeaders(headers http.Header) {
-	c.Headers = headers
+	client     *http.Client
+	settings   *clientBuilder
+	clientOnce sync.Once
 }
 
 func (c *httpClient) Get(url string, headers http.Header) (*http.Response, error) {

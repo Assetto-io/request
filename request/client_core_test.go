@@ -14,13 +14,22 @@ type testData struct {
 	Lastname  string   `xml:"lastname" json:"last_name"`
 }
 
+func makeSUT() *httpClient {
+	client := httpClient{}
+	client.settings = &clientBuilder{}
+	client.client = client.getClient()
+	return &client
+}
+
 func TestMapRequestHeaders(t *testing.T) {
 	// Init
-	client := httpClient{}
+	client := makeSUT()
+
 	headers := make(http.Header)
 	headers.Set("Content-Type", "application/json")
 	headers.Set("User-Agent", "awesome-http-client")
-	client.SetCommonHeaders(headers)
+
+	client.settings.headers = headers
 
 	customHeaders := make(http.Header)
 	customHeaders.Set("X-Request-id", "assetto-321")
