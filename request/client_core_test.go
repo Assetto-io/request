@@ -3,6 +3,7 @@ package request
 import (
 	"encoding/json"
 	"encoding/xml"
+	"github.com/assetto-io/request/text"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
@@ -26,8 +27,8 @@ func TestMapRequestHeaders(t *testing.T) {
 	client := makeSUT()
 
 	headers := make(http.Header)
-	headers.Set("Content-Type", "application/json")
-	headers.Set("User-Agent", "awesome-http-client")
+	headers.Set(text.HeaderContentType, text.ContentTypeJson)
+	headers.Set(text.HeaderUserAgent, "awesome-http-client")
 
 	client.settings.headers = headers
 
@@ -40,8 +41,8 @@ func TestMapRequestHeaders(t *testing.T) {
 	// Validation
 	assert.Equal(t, 3, len(finalHeaders))
 	assert.Equal(t, "assetto-321", finalHeaders.Get("X-Request-id"))
-	assert.Equal(t, "awesome-http-client", finalHeaders.Get("User-Agent"))
-	assert.Equal(t, "application/json", finalHeaders.Get("Content-Type"))
+	assert.Equal(t, "awesome-http-client", finalHeaders.Get(text.HeaderUserAgent))
+	assert.Equal(t, "application/json", finalHeaders.Get(text.HeaderContentType))
 }
 
 func TestMapRequestBody(t *testing.T) {

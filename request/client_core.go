@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"github.com/assetto-io/request/text"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -21,7 +22,7 @@ const (
 func (c *httpClient) do(method string, url string, headers http.Header, body interface{}) (*Response, error) {
 	fullHeaders := c.mapRequestHeaders(headers)
 
-	requestBody, err := c.mapRequestBody(fullHeaders.Get("Content-Type"), body)
+	requestBody, err := c.mapRequestBody(fullHeaders.Get(text.HeaderContentType), body)
 	if err != nil {
 		return nil, err
 	}
@@ -113,9 +114,9 @@ func (c *httpClient) mapRequestBody(contentType string, body interface{}) ([]byt
 	}
 
 	switch strings.ToLower(contentType) {
-	case "application/json":
+	case text.ContentTypeJson:
 		return json.Marshal(body)
-	case "application/xml":
+	case text.ContentTypeXml:
 		return xml.Marshal(body)
 	default:
 		return json.Marshal(body)
