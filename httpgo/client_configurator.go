@@ -1,4 +1,4 @@
-package request
+package httpgo
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ func (c *clientConfigurator) mapRequestBody(contentType string, body interface{}
 }
 
 func (c *clientConfigurator) getHeaders(headers ...http.Header) http.Header {
-	// we are interested only in one http.Header
+	// we are interested only in one httpgo.Header
 	if len(headers) > 0 {
 		return headers[0]
 	}

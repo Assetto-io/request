@@ -1,4 +1,4 @@
-package request
+package httpgo
 
 import (
 	"bytes"
@@ -26,7 +26,7 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, errors.New("unable to create new request")
+		return nil, errors.New("unable to create new httpgo")
 	}
 
 	request.Header = fullHeaders

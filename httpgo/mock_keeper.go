@@ -1,4 +1,4 @@
-package request
+package httpgo
 
 import (
 	"crypto/md5"

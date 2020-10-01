@@ -1,4 +1,4 @@
-package request
+package httpgo
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ func TestMapRequestHeaders(t *testing.T) {
 
 	headers := make(http.Header)
 	headers.Set(text.HeaderContentType, text.ContentTypeJson)
-	headers.Set(text.HeaderUserAgent, "awesome-http-client")
+	headers.Set(text.HeaderUserAgent, "awesome-httpgo-client")
 
 	client.configurator.settings.headers = headers
 
@@ -41,7 +41,7 @@ func TestMapRequestHeaders(t *testing.T) {
 	// Validation
 	assert.Equal(t, 3, len(finalHeaders))
 	assert.Equal(t, "assetto-321", finalHeaders.Get("X-Request-id"))
-	assert.Equal(t, "awesome-http-client", finalHeaders.Get(text.HeaderUserAgent))
+	assert.Equal(t, "awesome-httpgo-client", finalHeaders.Get(text.HeaderUserAgent))
 	assert.Equal(t, "application/json", finalHeaders.Get(text.HeaderContentType))
 }
 

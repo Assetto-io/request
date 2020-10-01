@@ -13,14 +13,14 @@ type Endpoints struct {
 }
 
 func GetEndpoints() (*Endpoints, error) {
-	// Get request:
+	// Get httpgo:
 
 	response, err := httpClient.Get(URL, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	// No need for closing http.Response.Body
+	// No need for closing httpgo.Response.Body
 	// Simple interface for response data extraction:
 
 	fmt.Println(fmt.Sprintf("Status code: %d:", response.StatusCode))
