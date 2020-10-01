@@ -1,13 +1,13 @@
 package example
 
 import (
-	"github.com/assetto-io/request/request"
+	"github.com/assetto-io/request/httpgo"
 	"net/http"
 )
 
 // Put all your Mock settings here
 func setMocks() {
-	mockError := request.Mock{
+	mockError := httpgo.Mock{
 		Method:             http.MethodGet,
 		Url:                "https://api.github.com",
 		ResponseStatusCode: http.StatusOK,

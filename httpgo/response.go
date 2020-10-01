@@ -1,4 +1,4 @@
-package request
+package httpgo
 
 import (
 	"encoding/json"

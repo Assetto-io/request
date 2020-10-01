@@ -1,24 +1,24 @@
 package example
 
 import (
-	"github.com/assetto-io/request/request"
+	"github.com/assetto-io/request/httpgo"
 	"time"
 )
 
 var (
-	httpClient request.HttpClient
-	mockKeeper request.MockKeeper
+	httpClient httpgo.HttpClient
+	mockKeeper httpgo.MockKeeper
 )
 
 func setHttpClient() {
-	httpClient = request.NewBuilder().
+	httpClient = httpgo.NewBuilder().
 		SetResponseTimeout(3 * time.Second).
 		SetMaxIdleConnections(5).
 		Build()
 }
 
 func setMockHttpClient() {
-	httpClient, mockKeeper = request.NewBuilder().
+	httpClient, mockKeeper = httpgo.NewBuilder().
 		SetResponseTimeout(3 * time.Second).
 		SetMaxIdleConnections(5).
 		BuildMockClient()
