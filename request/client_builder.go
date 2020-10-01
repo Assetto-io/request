@@ -5,17 +5,6 @@ import (
 	"time"
 )
 
-type ClientBuilder interface {
-	SetCommonHeaders(headers http.Header) ClientBuilder
-	SetConnectionTimeout(timeout time.Duration) ClientBuilder
-	SetResponseTimeout(timeout time.Duration) ClientBuilder
-	SetMaxIdleConnections(connections int) ClientBuilder
-	SetHttpClient(client *http.Client) ClientBuilder
-	SetUserAgent(agent string) ClientBuilder
-	DisableAllTimeouts(disable bool) ClientBuilder
-	Build() HttpClient
-}
-
 type clientBuilder struct {
 	headers            http.Header
 	maxIdleConnections int
@@ -26,16 +15,24 @@ type clientBuilder struct {
 	timeoutsDisabled   bool
 }
 
+// ClientBuilder provides a clean way to configure HTTP Client based on
+// the combination of methods
+type ClientBuilder interface {
+	SetCommonHeaders(headers http.Header) ClientBuilder
+	SetConnectionTimeout(timeout time.Duration) ClientBuilder
+	SetResponseTimeout(timeout time.Duration) ClientBuilder
+	SetMaxIdleConnections(connections int) ClientBuilder
+	SetHttpClient(client *http.Client) ClientBuilder
+	SetUserAgent(agent string) ClientBuilder
+	DisableAllTimeouts(disable bool) ClientBuilder
+	Build() HttpClient
+
+	BuildMockClient() (HttpClient, MockKeeper)
+}
+
 func NewBuilder() ClientBuilder {
 	builder := &clientBuilder{}
 	return builder
-}
-
-func (c *clientBuilder) Build() HttpClient {
-	client := httpClient{
-		settings: c,
-	}
-	return &client
 }
 
 func (c *clientBuilder) SetCommonHeaders(headers http.Header) ClientBuilder {
@@ -71,4 +68,25 @@ func (c *clientBuilder) SetHttpClient(client *http.Client) ClientBuilder {
 func (c *clientBuilder) SetUserAgent(agent string) ClientBuilder {
 	c.userAgent = agent
 	return c
+}
+
+func (c *clientBuilder) Build() HttpClient {
+	client := httpClient{
+		configurator: clientConfigurator{
+			settings: c,
+		},
+	}
+	return &client
+}
+
+func (c *clientBuilder) BuildMockClient() (HttpClient, MockKeeper) {
+	client := httpClientMock{
+		configurator: clientConfigurator{
+			settings: c,
+		},
+		keeper: MockKeeper{
+			mocks: make(map[string]*Mock),
+		},
+	}
+	return &client, client.keeper
 }

@@ -1,11 +1,33 @@
 package request
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"github.com/assetto-io/request/text"
 	"net/http"
+	"strings"
 )
 
-func getHeaders(headers ...http.Header) http.Header {
+type clientConfigurator struct {
+	settings *clientBuilder
+}
+
+func (c *clientConfigurator) mapRequestBody(contentType string, body interface{}) ([]byte, error) {
+	if body == nil {
+		return nil, nil
+	}
+
+	switch strings.ToLower(contentType) {
+	case text.ContentTypeJson:
+		return json.Marshal(body)
+	case text.ContentTypeXml:
+		return xml.Marshal(body)
+	default:
+		return json.Marshal(body)
+	}
+}
+
+func (c *clientConfigurator) getHeaders(headers ...http.Header) http.Header {
 	// we are interested only in one http.Header
 	if len(headers) > 0 {
 		return headers[0]
@@ -14,7 +36,7 @@ func getHeaders(headers ...http.Header) http.Header {
 	return http.Header{}
 }
 
-func (c *httpClient) mapRequestHeaders(customHeaders http.Header) http.Header {
+func (c *clientConfigurator) mapRequestHeaders(customHeaders http.Header) http.Header {
 	result := make(http.Header)
 
 	// get headers from default settings
