@@ -17,7 +17,7 @@ type testData struct {
 
 func makeSUT() *httpClient {
 	client := httpClient{}
-	client.settings = &clientBuilder{}
+	client.configurator.settings = &clientBuilder{}
 	client.client = client.getClient()
 	return &client
 }
@@ -30,13 +30,13 @@ func TestMapRequestHeaders(t *testing.T) {
 	headers.Set(text.HeaderContentType, text.ContentTypeJson)
 	headers.Set(text.HeaderUserAgent, "awesome-http-client")
 
-	client.settings.headers = headers
+	client.configurator.settings.headers = headers
 
 	customHeaders := make(http.Header)
 	customHeaders.Set("X-Request-id", "assetto-321")
 
 	// Exec
-	finalHeaders := client.mapRequestHeaders(customHeaders)
+	finalHeaders := client.configurator.mapRequestHeaders(customHeaders)
 
 	// Validation
 	assert.Equal(t, 3, len(finalHeaders))
@@ -56,7 +56,7 @@ func TestMapRequestBody(t *testing.T) {
 
 	t.Run("RequestBodyIsNil", func(t *testing.T) {
 		// Exec
-		body, err := client.mapRequestBody("", nil)
+		body, err := client.configurator.mapRequestBody("", nil)
 
 		// Validation
 		assert.Nil(t, body)
@@ -65,7 +65,7 @@ func TestMapRequestBody(t *testing.T) {
 
 	t.Run("RequestBodyDefault", func(t *testing.T) {
 		// Exec
-		body, err := client.mapRequestBody("", data)
+		body, err := client.configurator.mapRequestBody("", data)
 		buffer := testData{}
 		json.Unmarshal(body, &buffer)
 
@@ -78,7 +78,7 @@ func TestMapRequestBody(t *testing.T) {
 
 	t.Run("RequestBodyIsJson", func(t *testing.T) {
 		// Exec
-		body, err := client.mapRequestBody("application/json", data)
+		body, err := client.configurator.mapRequestBody("application/json", data)
 		buffer := testData{}
 		json.Unmarshal(body, &buffer)
 
@@ -91,7 +91,7 @@ func TestMapRequestBody(t *testing.T) {
 
 	t.Run("RequestBodyIsXml", func(t *testing.T) {
 		// Exec
-		body, err := client.mapRequestBody("application/xml", data)
+		body, err := client.configurator.mapRequestBody("application/xml", data)
 		buffer := testData{}
 		xml.Unmarshal(body, &buffer)
 

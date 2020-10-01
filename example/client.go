@@ -6,14 +6,22 @@ import (
 )
 
 var (
-	httpClient = getHttpClient()
+	httpClient request.HttpClient
+	mockKeeper request.MockKeeper
 )
 
-func getHttpClient() request.HttpClient {
-	client := request.NewBuilder().
+func setHttpClient() {
+	httpClient = request.NewBuilder().
 		SetResponseTimeout(3 * time.Second).
 		SetMaxIdleConnections(5).
 		Build()
+}
 
-	return client
+func setMockHttpClient() {
+	httpClient, mockKeeper = request.NewBuilder().
+		SetResponseTimeout(3 * time.Second).
+		SetMaxIdleConnections(5).
+		BuildMockClient()
+
+	setMocks()
 }
